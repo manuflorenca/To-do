@@ -11,6 +11,10 @@
     box-sizing: border-box;
 }
 
+html {
+    height: 100vh;
+}
+
 body {
     background-image: url(../IMG/bg.jpg);
     background-color: center;

@@ -14,7 +14,7 @@ let oldInputValue;
 
 // Funções
 
-const saveTodo = (text) => {
+const saveTodo = (text,done=0,save=1) => {
 
     const todo = document.createElement("div");
     todo.classList.add("todo");
@@ -37,6 +37,17 @@ const saveTodo = (text) => {
     deleteBtn.classList.add("remove-todo");
     deleteBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
     todo.appendChild(deleteBtn);
+
+    // Utilizando dados da localStorage
+
+    if(done){
+        todo.classList.add("done")
+    }
+
+    if(save){
+        saveTodoLocalStorage({text,done:0})
+    }
+
 
     todoList.appendChild(todo);
 
@@ -84,6 +95,36 @@ const getSearchTodos = (search) => {
 
     });
 }
+
+const filterTodos = (filterValue) => {
+
+    const todos = document.querySelectorAll(".todo");
+
+    switch(filterValue) {
+
+        case "all":
+            todos.forEach((todo) => todo.style.display = "flex")
+            break
+
+        case "done":
+            todos.forEach((todo) => todo.classList.contains("done") 
+            ? (todo.style.display = "flex") 
+            : (todo.style.display = "none")
+            );
+            break
+
+        
+        case "todo":
+            todos.forEach((todo) => !todo.classList.contains("done") 
+            ? (todo.style.display = "flex") 
+            : (todo.style.display = "none")
+            );
+            break
+
+        default:
+            break;
+    }   
+};
 
 // Eventos
 
@@ -157,3 +198,30 @@ eraseBtn.addEventListener("click", (e) => {
     searchInput.dispatchEvent(new Event("keyup"));
     
 });
+
+filterBtn.addEventListener("change", (e) => {
+
+    const filterValue = e.target.value;
+    filterTodos(filterValue);
+});
+
+// Local Storage
+
+const getTodosLocalStorage = () => {
+
+    const todos = JSON.parse(localStorage.getItem("todos")) || []
+    return todos;
+}
+
+const saveTodoLocalStorage = (todo) => {
+
+    const todos = getTodosLocalStorage();
+
+    todos.push(todo);
+
+    localStorage.setItem("todos", JSON.stringify(todos));
+
+    // Add o novo todo no arr
+
+    // salvar tudo na ls
+};
