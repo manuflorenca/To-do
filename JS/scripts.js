@@ -71,7 +71,9 @@ const updateTodo = (text) => {
         let todoTitle = todo.querySelector("h3")
 
         if(todoTitle.innerText === oldInputValue){
-            todoTitle.innerText = text
+            todoTitle.innerText = text;
+
+            updateTodoLocalStorage(oldInputValue,text)
         };
 
     });
@@ -151,10 +153,14 @@ document.addEventListener("click", (e) => {
 
     if(targetEl.classList.contains("finish-todo")){
         parenEl.classList.toggle("done");
+
+        updateTodoStatusLocalStorage(todoTitle);
     };
 
     if(targetEl.classList.contains("remove-todo")) {
         parenEl.remove();
+
+        removeTodoLocalStorage(todoTitle);
     };
     
     if(targetEl.classList.contains("edit-todo")) {
@@ -213,6 +219,16 @@ const getTodosLocalStorage = () => {
     return todos;
 }
 
+const loadTodos = () => {
+
+    const todos = getTodosLocalStorage();
+
+    todos.forEach ((todo) => {
+        saveTodo(todo.text, todo.done,0)
+    });
+
+};
+
 const saveTodoLocalStorage = (todo) => {
 
     const todos = getTodosLocalStorage();
@@ -221,7 +237,28 @@ const saveTodoLocalStorage = (todo) => {
 
     localStorage.setItem("todos", JSON.stringify(todos));
 
-    // Add o novo todo no arr
-
-    // salvar tudo na ls
 };
+
+const removeTodoLocalStorage = (todoText) => {
+
+    const todos = getTodosLocalStorage();
+
+    const filteredTodos = todos.filter((todo) => todo.text !== todoText);
+    
+    localStorage.setItem("todos", JSON.stringify(filteredTodos));
+};
+
+const updateTodoLocalStorage = (todoOldText,todoNewText) => {
+
+    const todos = getTodosLocalStorage();
+
+    todos.map((todo) =>
+         todo.text === todoOldText ? (todo.done = todoNewText) : null
+         );
+    
+    localStorage.setItem("todos", JSON.stringify(todos));
+
+    
+};
+
+loadTodos();
